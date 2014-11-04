@@ -161,3 +161,5 @@ var Console = (function () {
 		}
 	};
 })();
+
+module.exports = Console;

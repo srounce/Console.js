@@ -1,3 +1,4 @@
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var o;"undefined"!=typeof window?o=window:"undefined"!=typeof global?o=global:"undefined"!=typeof self&&(o=self),o.Console=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 if (!Array.prototype.forEach)
 {
 	Array.prototype.forEach = function(fun /*, thisArg */)
@@ -221,23 +222,7 @@ module.exports = Console;
 	var existingSpanRegExp = /^<span style="([^"]+)">.+<\/span>$/,
 		spanOpenRegExp = /^<span style="([^"]+)">/,
 		spanOpenOrCloseRegExp = /<span style="[^"]+">|<\/span>/g,
-		jsonPartsRegExp = /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-		prettyJsonKey = 'json',
 		styles = {},
-		defaultStyles = {
-			red: 'color: red',
-			blue: 'color: blue',
-			green: 'color: green',
-			darkorange: 'color: darkorange',
-			magenta: 'color: magenta'
-		},
-		jsonStyle = {
-			'string': 'green',
-			'number': 'darkorange',
-			'boolean': 'blue',
-			'null': 'magenta',
-			'key': 'red'
-		},
 		attached = false;
 
 	function attach () {
@@ -246,44 +231,8 @@ module.exports = Console;
 
 	function register () {
 		if (typeof arguments[0] === 'object') {
-			var styles = defaultStyles,
-				userStyles = arguments[0];
+			var styles = arguments[0];
 
-			// check if `prettyJsonKey` is present and if
-			// that's the case, init the right style
-			if (Object.keys(userStyles).indexOf(prettyJsonKey) != -1) {
-				var verified = true,
-					userJsonStyles = userStyles[prettyJsonKey],
-					stylesKeys = Object.keys(styles),
-					userStylesKeys = Object.keys(userStyles);
-
-				// verify that the user defined style for `prettyJsonKey` has
-				// a key for each JSON components (bool, number, string, etc.)
-				// and that the associated color / style is defined
-				for (var jsonKey in jsonStyle) {
-					var dependantStyle = userJsonStyles[jsonKey],
-						isStyleDefined = stylesKeys.indexOf(dependantStyle) != -1 || userStylesKeys.indexOf(dependantStyle) != -1;
-					verified = userJsonStyles.hasOwnProperty(jsonKey) && isStyleDefined && verified;
-				}
-
-				if (verified) {
-					jsonStyle = userJsonStyles;
-				} else {
-					throw new Error('Invalid "' + prettyJsonKey + '" style.');
-				}
-				delete userStyles[prettyJsonKey];
-			}
-
-			// merge remaining user defined styles
-			for (var userStyle in userStyles) {
-				if (!userStyles.hasOwnProperty(userStyle)) return;
-				styles[userStyle] = userStyles[userStyle];
-			}
-
-			// register `prettyJsonKey`
-			registerStyle(prettyJsonKey);
-
-			// register all the other styles
 			for (var name in styles) {
 				if (!styles.hasOwnProperty(name)) return;
 				registerStyle(name, styles[name]);
@@ -294,44 +243,10 @@ module.exports = Console;
 	}
 
 	function registerStyle (name, style) {
-		var getter;
-
-		// avoid redefining getter
-		if (styles.hasOwnProperty(name)) return;
 		styles[name] = style;
 
-		var defaultGetter = function () {
+		function getter () {
 			return format(this.toString(), name);
-		};
-
-		var jsonGetter = function () {
-			var _string = jsonStyle.string,
-				_number = jsonStyle.number,
-				_boolean = jsonStyle.boolean,
-				_null = jsonStyle.null,
-				_key = jsonStyle.key;
-
-			return this.toString().replace(jsonPartsRegExp, function (match) {
-				var style = _number;
-				if (/^"/.test(match)) {
-					if (/:$/.test(match)) {
-						style = _key;
-					} else {
-						style = _string;
-					}
-				} else if (/true|false/.test(match)) {
-					style = _boolean;
-				} else if (/null/.test(match)) {
-					style = _null;
-				}
-				return format(match, style);
-			});
-		};
-
-		if (name === prettyJsonKey) {
-			getter = jsonGetter;
-		} else {
-			getter = defaultGetter;
 		}
 
 		if (attached) {
@@ -348,11 +263,6 @@ module.exports = Console;
 	function format (string, names) {
 		if (Console.support.consoleStyles) {
 			names.split(',').forEach(function (name) {
-				if (name === prettyJsonKey) {
-					string = string[prettyJsonKey];
-					return;
-				}
-
 				var style = styles[name];
 
 				if (existingSpanRegExp.test(string)) {
@@ -408,8 +318,7 @@ module.exports = Console;
 		attach: attach,
 		format: format,
 		register: register,
-		argumentsToConsoleArguments: argumentsToConsoleArguments,
-		jsonGetter: prettyJsonKey
+		argumentsToConsoleArguments: argumentsToConsoleArguments
 	};
 })();;Console.Stack = function (stack) {
 	this._stackString = stack || new Error().stack || '';
@@ -512,3 +421,5 @@ Console.Stack.prototype = {
 		return null;
 	}
 };
+},{}]},{},[1])(1)
+});

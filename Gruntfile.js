@@ -51,5 +51,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-bump');
 
+	grunt.registerTask('default', ['build']);
 	grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
 };

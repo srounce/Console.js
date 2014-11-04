@@ -4,20 +4,24 @@
   "description": "",
   "dependencies": {},
   "devDependencies": {
-    "mocha-sauce": "git://github.com/pbakaus/mocha-sauce.git",
-    "mocha": "^1.18.2",
-    "props": "^0.3.0",
-    "express": "^3.5.1",
-    "sauce-connect-launcher": "^0.3.3",
+    "browserify": "^6.2.0",
     "colors": "^0.6.2",
+    "express": "^3.5.1",
     "grunt": "^0.4.4",
     "grunt-contrib-concat": "^0.4.0",
     "grunt-contrib-uglify": "^0.4.0",
+    "mocha": "^1.18.2",
+    "mocha-sauce": "git://github.com/pbakaus/mocha-sauce.git",
+    "props": "^0.3.0",
+    "sauce-connect-launcher": "^0.3.3",
     "grunt-contrib-jshint": "^0.10.0",
-    "grunt-bump": "~0.3.1"
+    "grunt-bump": "~0.3.1",
+    "grunt-cli": "^0.1.13"
   },
+  "main": "console.dist.js",
   "scripts": {
-    "test": "node opensauce.js"
+    "test": "node opensauce.js",
+    "postInstall": "node node_modules/browserify/bin/cmd.js console.js -s Console > console.dist.js"
   },
   "repository": {
     "type": "git",
