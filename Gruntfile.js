@@ -9,11 +9,15 @@ module.exports = function(grunt) {
 
 		concat: {
 			options: {
-				separator: ';'
+				separator: ';',
 			},
 			dist: {
+				src: ['src/Console.js', 'src/Styles.js', 'src/Stack.js'],
+				dest: 'console.js',
+			},
+			compat: {
 				src: ['src/ecma5.js', 'src/Console.js', 'src/Styles.js', 'src/Stack.js'],
-				dest: 'console.js'
+				dest: 'console.compat.js',
 			}
 		},
 		uglify: {
@@ -23,6 +27,10 @@ module.exports = function(grunt) {
 			build: {
 				src: 'console.js',
 				dest: 'console.min.js'
+			},
+			compat: {
+				src: 'console.compat.js',
+				dest: 'console.compat.min.js'
 			}
 		},
 
